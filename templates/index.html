@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI智能视频识别学习平台</title>
+    <!-- 引入 Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 引入字体图标 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- 引入Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* 现代教育主题样式 */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --info-gradient: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+
+            --bg-primary: #f8faff;
+            --bg-secondary: #ffffff;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --border-radius: 16px;
+            --border-radius-sm: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-primary);
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 183, 77, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(120, 219, 226, 0.1) 0%, transparent 50%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .main-container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            padding: 32px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .main-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.1); }
+        }
+
+        .main-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--secondary-gradient);
+            border-radius: 2px;
+            animation: underlineGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes underlineGlow {
+            0% { width: 100px; opacity: 0.7; }
+            100% { width: 120px; opacity: 1; }
+        }
+
+        .enhanced-card {
+            background: var(--bg-secondary);
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .enhanced-card:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(120, 119, 198, 0.3);
+        }
+
+        .enhanced-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .enhanced-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-header-enhanced {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 20px 24px;
+            border: none;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-header-enhanced i {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .card-header-enhanced::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+        }
+
+        .card-body-enhanced {
+            padding: 24px;
+            position: relative;
+        }
+
+        /* 视频容器增强 */
+        .video-container-enhanced {
+            position: relative;
+            width: 100%;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3);
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-container-enhanced::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .video-container-enhanced img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: var(--border-radius-sm);
+            position: relative;
+            z-index: 1;
+        }
+
+        .video-placeholder {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            text-align: center;
+            z-index: 2;
+        }
+
+        /* 状态消息增强 */
+        .status-footer {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 12px 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-align: center;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+        }
+
+        /* 按钮增强 */
+        .btn-enhanced {
+            border: none;
+            border-radius: var(--border-radius-sm);
+            padding: 12px 24px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            text-transform: none;
+        }
+
+        .btn-enhanced::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-enhanced:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary-enhanced {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-primary-enhanced:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .btn-info-enhanced {
+            background: var(--success-gradient);
+            color: white;
+        }
+
+        .btn-info-enhanced:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+            color: white;
+        }
+
+        .btn-warning-enhanced {
+            background: var(--warning-gradient);
+            color: white;
+        }
+
+        .btn-warning-enhanced:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(67, 233, 123, 0.4);
+            color: white;
+        }
+
+        .btn-danger-enhanced {
+            background: var(--danger-gradient);
+            color: white;
+        }
+
+        .btn-danger-enhanced:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(250, 112, 154, 0.4);
+            color: white;
+        }
+
+        /* 表单控件增强 */
+        .form-select-enhanced,
+        .form-control-enhanced {
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: var(--bg-secondary);
+        }
+
+        .form-select-enhanced:focus,
+        .form-control-enhanced:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        /* 滚动区域增强 */
+        .scrollable-enhanced {
+            background: linear-gradient(135deg, #f8faff 0%, #ffffff 100%);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 16px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .scrollable-enhanced::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--info-gradient);
+            border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
+        }
+
+        /* 物体列表增强 */
+        .object-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .object-list li {
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(255, 255, 255, 0.8) 100%);
+            border-radius: var(--border-radius-sm);
+            border-left: 4px solid var(--primary-gradient);
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .object-list li:hover {
+            transform: translateX(4px);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(255, 255, 255, 1) 100%);
+        }
+
+        .object-list li::before {
+            content: '🎯';
+            margin-right: 8px;
+        }
+
+        /* 聊天消息增强 */
+        .chat-message {
+            margin-bottom: 16px;
+            padding: 14px 18px;
+            border-radius: 18px;
+            line-height: 1.5;
+            position: relative;
+            animation: messageSlide 0.3s ease-out;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user-message-enhanced {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-left: 40px;
+            text-align: right;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .user-message-enhanced::before {
+            content: '👤';
+            position: absolute;
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2em;
+        }
+
+        .ai-message-enhanced {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            margin-right: 40px;
+            text-align: left;
+            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+        }
+
+        .ai-message-enhanced::before {
+            content: '🤖';
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2em;
+        }
+
+        .system-message-enhanced {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: var(--text-primary);
+            text-align: center;
+            font-style: italic;
+            margin: 0 20px;
+            box-shadow: 0 4px 12px rgba(168, 237, 234, 0.3);
+        }
+
+        /* 警告框增强 */
+        .warning-enhanced {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            margin-bottom: 24px;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+            animation: warningPulse 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes warningPulse {
+            0% { box-shadow: var(--shadow-sm); }
+            100% { box-shadow: 0 8px 25px rgba(250, 112, 154, 0.4); }
+        }
+
+        /* 输入组增强 */
+        .input-group-enhanced {
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .input-group-enhanced .form-control {
+            border: none;
+            padding: 14px 18px;
+        }
+
+        .input-group-enhanced .btn {
+            border: none;
+            padding: 14px 20px;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .main-title {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .enhanced-card {
+                margin-bottom: 20px;
+            }
+        }
+
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-gradient);
+        }
+
+        /* 加载动画 */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 特殊高度设置 */
+        #detectedObjectsList {
+            height: 240px;
+        }
+
+        #zhipuInfoText {
+            height: 350px;
+        }
+
+        #chatHistoryText {
+            height: 640px;
+            margin-bottom: 16px;
+        }
+
+        /* Flexbox 增强 */
+        .row.main-panels {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: stretch;
+        }
+
+        .col-md-4 {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .flex-grow-1 {
+            flex-grow: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <h1 class="main-title">
+            <i class="fas fa-brain" style="margin-right: 15px; color: #667eea;"></i>
+            AI智能视频识别学习平台
+        </h1>
+
+        <div class="row g-4 main-panels">
+            <!-- 左侧列: 视频显示 & 当前帧检测到的物体 -->
+            <div class="col-md-4">
+                <div class="enhanced-card flex-grow-1">
+                    <div class="card-header-enhanced">
+                        <i class="fas fa-video"></i>
+                        实时视频流
+                    </div>
+                    <div class="card-body-enhanced" style="padding: 12px;">
+                        <div class="video-container-enhanced">
+                            <img id="videoFeed" src="{{ url_for('video_feed') }}" alt="视频流加载中...">
+                            <div class="video-placeholder" style="display: none;">
+                                <i class="fas fa-camera fa-3x mb-3"></i>
+                                <div>等待视频流连接...</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="status-footer" id="statusMessage">
+                        <i class="fas fa-wifi"></i>
+                        服务器连接正常
+                    </div>
+                </div>
+
+                <div class="enhanced-card">
+                    <div class="card-header-enhanced">
+                        <i class="fas fa-search"></i>
+                        识别到的物体
+                    </div>
+                    <div class="card-body-enhanced">
+                        <div class="scrollable-enhanced" id="detectedObjectsList">
+                            <ul class="object-list" id="objectList">
+                                <li style="color: #888; border-left-color: #ddd;">暂无检测结果</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 中间列: 控制面板 & 智普清言物体信息 -->
+            <div class="col-md-4">
+                {% if not zhipu_api_key_configured %}
+                <div class="warning-enhanced">
+                    <i class="fas fa-exclamation-triangle fa-lg"></i>
+                    <strong>API配置提醒</strong><br>
+                    智普AI API Key未配置，AI功能暂不可用<br>
+                    请在 <code>app.py</code> 中设置您的API密钥
+                </div>
+                {% endif %}
+
+                <div class="enhanced-card">
+                    <div class="card-header-enhanced">
+                        <i class="fas fa-cogs"></i>
+                        智能控制中心
+                    </div>
+                    <div class="card-body-enhanced">
+                        <div class="mb-3">
+                            <label for="videoSource" class="form-label">
+                                <i class="fas fa-play-circle"></i> 选择视频源:
+                            </label>
+                            <select class="form-select form-select-enhanced" id="videoSource">
+                                <option value="webcam">📷 摄像头</option>
+                                <option value="file">📁 视频文件</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3" id="filePathContainer" style="display: none;">
+                            <label for="videoFilePath" class="form-label">
+                                <i class="fas fa-file-video"></i> 文件路径:
+                            </label>
+                            <div class="input-group input-group-enhanced">
+                                <input type="text" class="form-control form-control-enhanced" id="videoFilePath" placeholder="请选择视频文件" readonly>
+                                <button class="btn btn-info-enhanced" type="button" id="browseFileBtn">
+                                    <i class="fas fa-folder-open"></i> 浏览
+                                </button>
+                                <input type="file" id="hiddenFileInput" style="display: none;" accept="video/*">
+                            </div>
+                            <small class="text-muted mt-2 d-block" id="fileInfoLabel">
+                                <i class="fas fa-info-circle"></i> 使用默认摄像头 (索引 0)
+                            </small>
+                        </div>
+
+                        <div class="d-grid gap-3">
+                            <button class="btn btn-enhanced btn-primary-enhanced" id="startStopBtn">
+                                <i class="fas fa-play"></i> 开始识别
+                            </button>
+                            <button class="btn btn-enhanced btn-info-enhanced" id="analyzeFrameBtn" disabled>
+                                <i class="fas fa-camera-retro"></i> 识别当前帧
+                            </button>
+                            <button class="btn btn-enhanced btn-warning-enhanced" id="resetAppBtn">
+                                <i class="fas fa-redo"></i> 重置系统
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="enhanced-card flex-grow-1">
+                    <div class="card-header-enhanced">
+                        <i class="fas fa-robot"></i>
+                        AI智能解析
+                    </div>
+                    <div class="card-body-enhanced">
+                        <div class="scrollable-enhanced" id="zhipuInfoText">
+                            <div style="text-align: center; color: #888; padding: 20px;">
+                                <i class="fas fa-lightbulb fa-2x mb-3" style="color: #ffc107;"></i>
+                                <div>AI正在待命，准备为您分析识别结果...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧列: 对话机器人 -->
+            <div class="col-md-4">
+                <div class="enhanced-card flex-grow-1">
+                    <div class="card-header-enhanced">
+                        <i class="fas fa-comments"></i>
+                        AI学习助手
+                    </div>
+                    <div class="card-body-enhanced">
+                        <div class="scrollable-enhanced" id="chatHistoryText">
+                            <div class="system-message-enhanced chat-message">
+                                <i class="fas fa-graduation-cap"></i>
+                                欢迎来到AI智能学习平台！我是您的专属学习助手，可以回答相关的问题。
+                            </div>
+                        </div>
+
+                        <div class="input-group input-group-enhanced mt-auto">
+                            <input type="text" class="form-control" placeholder="💬 输入您的问题..." id="chatInput">
+                            <button class="btn btn-primary-enhanced" type="button" id="chatSendBtn">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+
+                        <div class="text-center mt-3" id="chatStatusLabel" style="font-size: 0.9rem; color: #6c757d;">
+                            <i class="fas fa-circle text-success" style="font-size: 0.5rem; margin-right: 5px;"></i>
+                            助手在线，随时为您服务
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入 Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 引入 Socket.IO 客户端库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        // 初始化 Socket.IO 客户端连接
+        const socket = io();
+
+        // 获取 DOM 元素
+        const videoSourceSelect = document.getElementById('videoSource');
+        const filePathContainer = document.getElementById('filePathContainer');
+        const videoFilePathInput = document.getElementById('videoFilePath');
+        const browseFileBtn = document.getElementById('browseFileBtn');
+        const hiddenFileInput = document.getElementById('hiddenFileInput');
+        const fileInfoLabel = document.getElementById('fileInfoLabel');
+        const startStopBtn = document.getElementById('startStopBtn');
+        const analyzeFrameBtn = document.getElementById('analyzeFrameBtn');
+        const resetAppBtn = document.getElementById('resetAppBtn');
+
+        const objectList = document.getElementById('objectList');
+        const zhipuInfoText = document.getElementById('zhipuInfoText');
+        const chatHistoryText = document.getElementById('chatHistoryText');
+        const chatInput = document.getElementById('chatInput');
+        const chatSendBtn = document.getElementById('chatSendBtn');
+        const chatStatusLabel = document.getElementById('chatStatusLabel');
+        const videoFeedImg = document.getElementById('videoFeed');
+
+        let isVideoRunning = false;
+        let selectedFile = null;
+
+        // --- UI 状态更新函数 ---
+        function updateUIForSource() {
+            if (videoSourceSelect.value === 'webcam') {
+                filePathContainer.style.display = 'none';
+                fileInfoLabel.innerHTML = '<i class="fas fa-info-circle"></i> 使用默认摄像头 (索引 0)';
+                selectedFile = null;
+                videoFilePathInput.value = '';
+            } else {
+                filePathContainer.style.display = 'block';
+                if (selectedFile && selectedFile.serverPath) {
+                    videoFilePathInput.value = selectedFile.name;
+                    fileInfoLabel.innerHTML = `<i class="fas fa-check-circle text-success"></i> 已选择文件: ${selectedFile.name}`;
+                } else {
+                    videoFilePathInput.value = '';
+                    fileInfoLabel.innerHTML = '<i class="fas fa-info-circle"></i> 请选择视频文件';
+                }
+            }
+            browseFileBtn.disabled = isVideoRunning || videoSourceSelect.value === 'webcam';
+        }
+
+        function setRunningState(running) {
+            isVideoRunning = running;
+
+            if (running) {
+                startStopBtn.innerHTML = '<i class="fas fa-stop"></i> <span class="loading-spinner"></span> 停止识别';
+                startStopBtn.className = 'btn btn-enhanced btn-danger-enhanced';
+                chatStatusLabel.innerHTML = '<i class="fas fa-circle text-success" style="font-size: 0.5rem; margin-right: 5px;"></i> AI正在实时分析...';
+            } else {
+                startStopBtn.innerHTML = '<i class="fas fa-play"></i> 开始识别';
+                startStopBtn.className = 'btn btn-enhanced btn-primary-enhanced';
+                chatStatusLabel.innerHTML = '<i class="fas fa-circle text-success" style="font-size: 0.5rem; margin-right: 5px;"></i> 助手在线，随时为您服务';
+            }
+
+            analyzeFrameBtn.disabled = running;
+            videoSourceSelect.disabled = running;
+            browseFileBtn.disabled = running || videoSourceSelect.value === 'webcam';
+            videoFilePathInput.disabled = running || videoSourceSelect.value === 'webcam';
+        }
+
+        // --- 事件监听器 ---
+        videoSourceSelect.addEventListener('change', updateUIForSource);
+
+        browseFileBtn.addEventListener('click', () => {
+            hiddenFileInput.click();
+        });
+
+        hiddenFileInput.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                selectedFile = file;
+                videoFilePathInput.value = file.name;
+                fileInfoLabel.innerHTML = `<i class="fas fa-spinner fa-spin"></i> 正在上传文件: ${file.name}...`;
+
+                const formData = new FormData();
+                formData.append('video_file', file);
+
+                try {
+                    const uploadResponse = await fetch('/upload_video', { method: 'POST', body: formData });
+                    const uploadData = await uploadResponse.json();
+                    if (uploadData.status === 'success') {
+                        selectedFile.serverPath = uploadData.filepath;
+                        fileInfoLabel.innerHTML = `<i class="fas fa-check-circle text-success"></i> 文件上传成功: ${selectedFile.name}`;
+                        console.log('文件上传成功:', selectedFile.serverPath);
+                    } else {
+                        alert('文件上传失败: ' + uploadData.message);
+                        selectedFile = null;
+                        videoFilePathInput.value = '';
+                        fileInfoLabel.innerHTML = '<i class="fas fa-exclamation-triangle text-warning"></i> 文件上传失败，请重新选择';
+                    }
+                } catch (error) {
+                    console.error('上传时发生错误:', error);
+                    alert('文件上传时发生网络错误。');
+                    selectedFile = null;
+                    videoFilePathInput.value = '';
+                    fileInfoLabel.innerHTML = '<i class="fas fa-exclamation-triangle text-danger"></i> 网络错误，请重试';
+                }
+            } else {
+                selectedFile = null;
+                videoFilePathInput.value = '';
+                fileInfoLabel.innerHTML = '<i class="fas fa-info-circle"></i> 请选择视频文件';
+            }
+        });
+
+        startStopBtn.addEventListener('click', async () => {
+            if (isVideoRunning) {
+                const response = await fetch('/start_stream', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 'action': 'stop' })
+                });
+                const data = await response.json();
+                console.log(data.message);
+                setRunningState(false);
+            } else {
+                const sourceType = videoSourceSelect.value;
+                let path = null;
+                if (sourceType === 'file') {
+                    if (!selectedFile || !selectedFile.serverPath) {
+                        alert('请先选择一个有效的视频文件并等待上传完成！');
+                        return;
+                    }
+                    path = selectedFile.serverPath;
+                }
+
+                const response = await fetch('/start_stream', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ source_type: sourceType, path: path })
+                });
+                const data = await response.json();
+                if (data.status === 'error') {
+                    alert('启动失败: ' + data.message);
+                } else {
+                    setRunningState(true);
+                    console.log(data.message);
+                    videoFeedImg.src = "{{ url_for('video_feed') }}?" + new Date().getTime();
+                }
+            }
+        });
+
+        analyzeFrameBtn.addEventListener('click', async () => {
+            const response = await fetch('/analyze_frame', { method: 'POST' });
+            const data = await response.json();
+            if (data.status === 'error') {
+                alert('分析失败: ' + data.message);
+            } else {
+                console.log(data.message);
+                setRunningState(false);
+            }
+        });
+
+        resetAppBtn.addEventListener('click', async () => {
+            const response = await fetch('/reset_app', { method: 'POST' });
+            const data = await response.json();
+            console.log(data.message);
+            setRunningState(false);
+
+            objectList.innerHTML = '<li style="color: #888; border-left-color: #ddd;">暂无检测结果</li>';
+            zhipuInfoText.innerHTML = '<div style="text-align: center; color: #888; padding: 20px;"><i class="fas fa-lightbulb fa-2x mb-3" style="color: #ffc107;"></i><div>AI正在待命，准备为您分析识别结果...</div></div>';
+            chatHistoryText.innerHTML = '<div class="system-message-enhanced chat-message"><i class="fas fa-graduation-cap"></i> 欢迎来到AI智能学习平台！我是您的专属学习助手，可以回答关于物体识别的问题。</div>';
+            chatStatusLabel.innerHTML = '<i class="fas fa-circle text-success" style="font-size: 0.5rem; margin-right: 5px;"></i> 助手在线，随时为您服务';
+
+            videoSourceSelect.value = 'webcam';
+            selectedFile = null;
+            videoFilePathInput.value = '';
+            videoFeedImg.src = "{{ url_for('video_feed') }}";
+            updateUIForSource();
+        });
+
+        // --- 聊天机器人功能 ---
+        chatSendBtn.addEventListener('click', () => sendChatMessage());
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        });
+
+        function sendChatMessage() {
+            const message = chatInput.value.trim();
+            if (message) {
+                socket.emit('send_chat_message', { message: message });
+                chatInput.value = '';
+                chatSendBtn.disabled = true;
+                chatInput.disabled = true;
+                chatStatusLabel.innerHTML = '<i class="fas fa-circle text-warning" style="font-size: 0.5rem; margin-right: 5px;"></i> AI正在思考...';
+            }
+        }
+
+        function convertMarkdownToHtml(text) {
+            let html = text;
+            html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+            html = html.replace(/(?<!\*)\*(.*?)\*(?!\*)/g, '<i>$1</i>');
+            html = html.replace(/(?<!_)\_(.*?)\_(?!_)/g, '<i>$1</i>');
+            html = html.replace(/\n/g, '<br>');
+            return html;
+        }
+
+        function displayChatMessage(message, senderType = 'ai') {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('chat-message');
+
+            if (senderType === 'user') {
+                msgDiv.classList.add('user-message-enhanced');
+            } else if (senderType === 'system') {
+                msgDiv.classList.add('system-message-enhanced');
+            } else {
+                msgDiv.classList.add('ai-message-enhanced');
+            }
+
+            msgDiv.innerHTML = convertMarkdownToHtml(message);
+            chatHistoryText.appendChild(msgDiv);
+            chatHistoryText.scrollTop = chatHistoryText.scrollHeight;
+        }
+
+        // --- SocketIO 事件处理函数 ---
+        socket.on('detected_objects_update', (data) => {
+            objectList.innerHTML = '';
+            if (data.objects && data.objects.length > 0) {
+                data.objects.forEach(obj => {
+                    const li = document.createElement('li');
+                    li.innerText = obj;
+                    objectList.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.innerHTML = '<i class="fas fa-search" style="margin-right: 8px; color: #888;"></i>未检测到物体';
+                li.style.color = '#888';
+                li.style.borderLeftColor = '#ddd';
+                objectList.appendChild(li);
+            }
+        });
+
+        socket.on('zhipu_info_update', (data) => {
+            if (data.clear) {
+                zhipuInfoText.innerHTML = '<div style="text-align: center; color: #888; padding: 20px;"><i class="fas fa-lightbulb fa-2x mb-3" style="color: #ffc107;"></i><div>AI正在待命，准备为您分析识别结果...</div></div>';
+            } else if (data.info) {
+                const p = document.createElement('p');
+                p.innerHTML = convertMarkdownToHtml(data.info);
+                p.style.marginBottom = '12px';
+                p.style.padding = '8px';
+                p.style.borderLeft = '3px solid #667eea';
+                p.style.backgroundColor = 'rgba(102, 126, 234, 0.05)';
+                p.style.borderRadius = '8px';
+                zhipuInfoText.appendChild(p);
+                zhipuInfoText.scrollTop = zhipuInfoText.scrollHeight;
+            }
+        });
+
+        socket.on('chat_response', (data) => {
+            if (data.user_message) {
+                displayChatMessage(`${data.user_message}`, 'user');
+            } else if (data.is_system) {
+                displayChatMessage(`${data.message}`, 'system');
+            } else if (data.success) {
+                displayChatMessage(`${data.message}`, 'ai');
+            } else {
+                displayChatMessage(`抱歉，发生错误：${data.message}`, 'ai');
+            }
+
+            chatSendBtn.disabled = false;
+            chatInput.disabled = false;
+            chatInput.focus();
+            chatStatusLabel.innerHTML = '<i class="fas fa-circle text-success" style="font-size: 0.5rem; margin-right: 5px;"></i> 助手在线，随时为您服务';
+        });
+
+        socket.on('chat_status', (data) => {
+            chatStatusLabel.innerHTML = `<i class="fas fa-circle" style="color: ${data.color}; font-size: 0.5rem; margin-right: 5px;"></i> ${data.message}`;
+        });
+
+        socket.on('status_update', (data) => {
+            console.log('服务器状态:', data.message);
+            document.getElementById('statusMessage').innerHTML = `<i class="fas fa-wifi"></i> ${data.message}`;
+        });
+
+        socket.on('clear_displays', () => {
+            objectList.innerHTML = '<li style="color: #888; border-left-color: #ddd;">暂无检测结果</li>';
+            zhipuInfoText.innerHTML = '<div style="text-align: center; color: #888; padding: 20px;"><i class="fas fa-lightbulb fa-2x mb-3" style="color: #ffc107;"></i><div>AI正在待命，准备为您分析识别结果...</div></div>';
+            chatHistoryText.innerHTML = '<div class="system-message-enhanced chat-message"><i class="fas fa-graduation-cap"></i> 欢迎来到AI智能学习平台！我是您的专属学习助手，可以回答关于物体识别的问题。</div>';
+            chatStatusLabel.innerHTML = '<i class="fas fa-circle text-success" style="font-size: 0.5rem; margin-right: 5px;"></i> 助手在线，随时为您服务';
+        });
+
+        // 页面加载完成后的初始设置
+        document.addEventListener('DOMContentLoaded', () => {
+            updateUIForSource();
+            setRunningState(false);
+            videoFeedImg.alt = '视频流正在加载...';
+
+            // 添加页面加载动画
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.5s ease';
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
